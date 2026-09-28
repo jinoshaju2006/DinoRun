@@ -39,8 +39,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         text.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.BOLD));
     }
     private Bitmap load(Context c,int id){return BitmapFactory.decodeResource(c.getResources(),id);}
+    private String fmt(float v) { return String.valueOf((int) v); }
     @Override public void surfaceCreated(SurfaceHolder h){ startMusic(); start(); }
+    private String fmt(float v) { return String.valueOf((int) v); }
     @Override public void surfaceChanged(SurfaceHolder h,int f,int w,int h2){ W=w;H=h2; }
+    private String fmt(float v) { return String.valueOf((int) v); }
     @Override public void surfaceDestroyed(SurfaceHolder h){ stop(); stopMusic(); }
     private void start(){ if(running)return; running=true; thread=new Thread(this,"DinoGame"); thread.start(); }
     private void stop(){running=false; if(thread!=null)try{thread.join(500);}catch(Exception ignored){} }
@@ -48,6 +51,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private void stopMusic(){if(music!=null){try{music.stop();}catch(Exception ignored){} music.release(); music=null;}}
     private void sfx(int id){ if(!prefs.getBoolean("sfx",true))return; try{MediaPlayer m=MediaPlayer.create(getContext(),id); if(m!=null){m.setOnCompletionListener(MediaPlayer::release);m.start();}}catch(Exception ignored){}}
 
+    private String fmt(float v) { return String.valueOf((int) v); }
     @Override public void run(){
         lastFrame=SystemClock.elapsedRealtime();
         while(running){
@@ -116,6 +120,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private void small(Canvas c,String s,float x,float y,float size,int color){text.setTextSize(size);text.setColor(color);text.setTextAlign(Paint.Align.LEFT);c.drawText(s,x,y,text);}
     private void button(Canvas c,String label,float l,float t,float r,float b,int color){RectF q=new RectF(l,t,r,b);buttons.put(label+"@"+l,q);p.setColor(0x99000000);c.drawRoundRect(new RectF(l+4,t+5,r+4,b+5),18,18,p);p.setColor(color);c.drawRoundRect(q,18,18,p);text.setTextSize(Math.min(30,(b-t)*.42f));text.setColor(Color.WHITE);text.setTextAlign(Paint.Align.CENTER);text.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.BOLD));c.drawText(label,(l+r)/2f,(t+b)/2f-text.ascent()/2f-3,text);}
     private boolean hit(float x,float y,float l,float t,float r,float b){return x>=l&&x<=r&&y>=t&&y<=b;}
+    private String fmt(float v) { return String.valueOf((int) v); }
     @Override public boolean onTouchEvent(android.view.MotionEvent e){if(e.getAction()!=MotionEvent.ACTION_UP)return true;float x=e.getX(),y=e.getY();
         if(state==State.MENU){if(hit(x,y,W*.38f,H*.49f,W*.62f,H*.59f)){resetGame();}else if(hit(x,y,W*.34f,H*.61f,W*.66f,H*.70f)){state=State.HOW;sfx(R.raw.click);}else if(hit(x,y,W*.34f,H*.72f,W*.66f,H*.81f)){state=State.CHARACTERS;sfx(R.raw.click);}else if(hit(x,y,W*.40f,H*.83f,W*.60f,H*.91f)){state=State.SETTINGS;sfx(R.raw.click);}}
         else if(state==State.HOW){if(hit(x,y,W*.42f,H*.80f,W*.58f,H*.90f)){state=State.MENU;sfx(R.raw.click);}}
