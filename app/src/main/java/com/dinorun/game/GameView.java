@@ -128,7 +128,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private void small(Canvas c,String s,float x,float y,float size,int color){text.setTextSize(size);text.setColor(color);text.setTextAlign(Paint.Align.LEFT);c.drawText(s,x,y,text);}
     private void button(Canvas c,String label,float l,float t,float r,float b,int color){RectF q=new RectF(l,t,r,b);buttons.put(label+"@"+l,q);p.setColor(0x99000000);c.drawRoundRect(new RectF(l+4,t+5,r+4,b+5),18,18,p);p.setColor(color);c.drawRoundRect(q,18,18,p);text.setTextSize(Math.min(30,(b-t)*.42f));text.setColor(Color.WHITE);text.setTextAlign(Paint.Align.CENTER);text.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.BOLD));c.drawText(label,(l+r)/2f,(t+b)/2f-text.ascent()/2f-3,text);}
     private boolean hit(float x,float y,float l,float t,float r,float b){return x>=l&&x<=r&&y>=t&&y<=b;}
-    @Override public boolean onTouchEvent(android.view.MotionEvent e){if(e.getAction()!=MotionEvent.ACTION_UP)return true;float x=e.getX(),y=e.getY();
+    @Override public boolean onTouchEvent(android.view.MotionEvent e){
+        float x=e.getX(),y=e.getY();
+
+        if(e.getAction()==MotionEvent.ACTION_DOWN){
+            if(state==State.PLAYING){
+                if(hit(x,y,W*.65f,H*.65f,W*.99f,H*.99f)){
+                    jump();
+                    return true;
+                }
+                if(hit(x,y,W*.70f,H*.04f,W*.77f,H*.13f)){
+                    state=State.PAUSED;
+                    sfx(R.raw.click);
+                    return true;
+                }
+            }
+            return true;
+        }
+
+        if(e.getAction()!=MotionEvent.ACTION_UP)return true;
         if(state==State.MENU){if(hit(x,y,W*.38f,H*.49f,W*.62f,H*.59f)){resetGame();}else if(hit(x,y,W*.34f,H*.61f,W*.66f,H*.70f)){state=State.HOW;sfx(R.raw.click);}else if(hit(x,y,W*.34f,H*.72f,W*.66f,H*.81f)){state=State.CHARACTERS;sfx(R.raw.click);}else if(hit(x,y,W*.40f,H*.83f,W*.60f,H*.91f)){state=State.SETTINGS;sfx(R.raw.click);}}
         else if(state==State.HOW){if(hit(x,y,W*.42f,H*.80f,W*.58f,H*.90f)){state=State.MENU;sfx(R.raw.click);}}
         else if(state==State.CHARACTERS){if(hit(x,y,W*.10f,H*.70f,W*.24f,H*.82f)){selected=(selected+3)%4;prefs.edit().putInt("dragon",selected).apply();sfx(R.raw.select);}else if(hit(x,y,W*.76f,H*.70f,W*.90f,H*.82f)){selected=(selected+1)%4;prefs.edit().putInt("dragon",selected).apply();sfx(R.raw.select);}else if(hit(x,y,W*.39f,H*.70f,W*.61f,H*.82f)){state=State.MENU;sfx(R.raw.dragon);}}
