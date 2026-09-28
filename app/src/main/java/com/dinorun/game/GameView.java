@@ -122,7 +122,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         else if(state==State.HOW){if(hit(x,y,W*.42f,H*.80f,W*.58f,H*.90f)){state=State.MENU;sfx(R.raw.click);}}
         else if(state==State.CHARACTERS){if(hit(x,y,W*.10f,H*.70f,W*.24f,H*.82f)){selected=(selected+3)%4;prefs.edit().putInt("dragon",selected).apply();sfx(R.raw.select);}else if(hit(x,y,W*.76f,H*.70f,W*.90f,H*.82f)){selected=(selected+1)%4;prefs.edit().putInt("dragon",selected).apply();sfx(R.raw.select);}else if(hit(x,y,W*.39f,H*.70f,W*.61f,H*.82f)){state=State.MENU;sfx(R.raw.dragon);}}
         else if(state==State.SETTINGS){if(hit(x,y,W*.31f,H*.38f,W*.42f,H*.49f)){fps=30;}else if(hit(x,y,W*.445f,H*.38f,W*.555f,H*.49f)){fps=60;}else if(hit(x,y,W*.58f,H*.38f,W*.69f,H*.49f)){fps=90;}else if(hit(x,y,W*.31f,H*.56f,W*.69f,H*.67f)){prefs.edit().putBoolean("sfx",!prefs.getBoolean("sfx",true)).apply();}else if(hit(x,y,W*.31f,H*.71f,W*.69f,H*.82f)){prefs.edit().putBoolean("music",!prefs.getBoolean("music",true)).apply(); if(music!=null){if(prefs.getBoolean("music",true))music.start();else music.pause();}}else if(hit(x,y,W*.42f,H*.87f,W*.58f,H*.96f)){prefs.edit().putInt("fps",fps).apply();state=State.MENU;}prefs.edit().putInt("fps",fps).apply();sfx(R.raw.click);}
-        else if(state==State.PLAYING){if(hit(x,y,W*.70f,H*.04f,W*.77f,H*.13f)){state=State.PAUSED;sfx(R.raw.click);}else{jump();}}
+        else if(state==State.PLAYING){
+    if(hit(x,y,W*.70f,H*.04f,W*.77f,H*.13f)){
+        state=State.PAUSED;
+        sfx(R.raw.click);
+    }else if(hit(x,y,W*.75f,H*.70f,W*.99f,H*.98f)){
+        jump();
+    }
+}
         else if(state==State.PAUSED){if(hit(x,y,W*.40f,H*.35f,W*.60f,H*.46f)){state=State.PLAYING;sfx(R.raw.click);}else if(hit(x,y,W*.40f,H*.50f,W*.60f,H*.61f)){resetGame();}else if(hit(x,y,W*.37f,H*.65f,W*.63f,H*.76f)){state=State.MENU;sfx(R.raw.click);}}
         else if(state==State.GAME_OVER){if(hit(x,y,W*.20f,H*.84f,W*.38f,H*.94f)){resetGame();}else if(hit(x,y,W*.41f,H*.84f,W*.59f,H*.94f)){state=State.CHARACTERS;}else if(hit(x,y,W*.62f,H*.84f,W*.80f,H*.94f)){state=State.MENU;sfx(R.raw.click);}}
         else if(state==State.WIN){if(hit(x,y,W*.36f,H*.82f,W*.64f,H*.93f)){resetGame();}}
