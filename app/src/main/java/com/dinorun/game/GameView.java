@@ -112,7 +112,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private void drawPause(Canvas c){titleText(c,"PAUSED",W/2f,H*.22f,52,Color.WHITE);button(c,"RESUME",W*.40f,H*.35f,W*.60f,H*.46f,0xFF76C72B);button(c,"RESTART",W*.40f,H*.50f,W*.60f,H*.61f,0xFF3C8BCF);button(c,"MAIN MENU",W*.37f,H*.65f,W*.63f,H*.76f,0xFF555555);}
     private void drawGameOver(Canvas c){bg(c);drawBitmap(c,lose,new RectF(W*.27f,H*.08f,W*.73f,H*.70f));titleText(c,"Ayyoo Munji 🥴😫",W/2f,H*.72f,40,Color.WHITE);small(c,"Better luck next time 🤧",W/2f-145,H*.79f,25,0xFFFFE6E6);button(c,"RETRY",W*.20f,H*.84f,W*.38f,H*.94f,0xFF76C72B);button(c,"CHARACTER",W*.41f,H*.84f,W*.59f,H*.94f,0xFFE65B9A);button(c,"MAIN MENU",W*.62f,H*.84f,W*.80f,H*.94f,0xFF555555);}
     private void drawWin(Canvas c){bg(c);drawBitmap(c,win,new RectF(W*.30f,H*.06f,W*.70f,H*.70f));titleText(c,"Jeyiccheee 🙌 😸",W/2f,H*.74f,42,Color.WHITE);button(c,"PLAY AGAIN",W*.36f,H*.82f,W*.64f,H*.93f,0xFF76C72B);}
-    private void drawBitmap(Canvas c,Bitmap b,RectF r){if(b==null)return;p.setAlpha(255);c.drawBitmap(b,null,r,p);}
+    private void drawBitmap(Canvas c,Bitmap b,RectF r){
+        if(b==null)return;
+        p.setAlpha(255);
+        float bw=b.getWidth(), bh=b.getHeight();
+        float rw=r.width(), rh=r.height();
+        float sc=Math.min(rw/bw,rh/bh);
+        float nw=bw*sc, nh=bh*sc;
+        float l=r.left+(rw-nw)/2f;
+        float t=r.top+(rh-nh)/2f;
+        RectF dst=new RectF(l,t,l+nw,t+nh);
+        c.drawBitmap(b,null,dst,p);
+    }
     private void titleText(Canvas c,String s,float x,float y,float size,int color){text.setTextSize(size);text.setColor(color);text.setTextAlign(Paint.Align.CENTER);text.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.BOLD));p.setStyle(Paint.Style.FILL);c.drawText(s,x,y,text);}
     private void small(Canvas c,String s,float x,float y,float size,int color){text.setTextSize(size);text.setColor(color);text.setTextAlign(Paint.Align.LEFT);c.drawText(s,x,y,text);}
     private void button(Canvas c,String label,float l,float t,float r,float b,int color){RectF q=new RectF(l,t,r,b);buttons.put(label+"@"+l,q);p.setColor(0x99000000);c.drawRoundRect(new RectF(l+4,t+5,r+4,b+5),18,18,p);p.setColor(color);c.drawRoundRect(q,18,18,p);text.setTextSize(Math.min(30,(b-t)*.42f));text.setColor(Color.WHITE);text.setTextAlign(Paint.Align.CENTER);text.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.BOLD));c.drawText(label,(l+r)/2f,(t+b)/2f-text.ascent()/2f-3,text);}
