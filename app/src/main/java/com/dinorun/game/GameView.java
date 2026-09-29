@@ -20,7 +20,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private State state=State.MENU;
     private final Paint p=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
     private final Paint text=new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Bitmap title, lose, win;
+    private final Bitmap title, lose, win, uiCharacter1, uiCharacter2, developerLogo;
     private final Bitmap[] dragons=new Bitmap[4];
     private final RectF player=new RectF();
     private final ArrayList<RectF> cacti=new ArrayList<>();
@@ -40,7 +40,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         prefs=c.getSharedPreferences("dino",Context.MODE_PRIVATE);
 highScore=prefs.getInt("highScore",0);
         selected=prefs.getInt("dragon",0); fps=prefs.getInt("fps",60); best=prefs.getFloat("best",0);
-        title=load(c,R.drawable.title); dragons[0]=load(c,R.drawable.dragon1); dragons[1]=load(c,R.drawable.dragon2); dragons[2]=load(c,R.drawable.dragon3); dragons[3]=load(c,R.drawable.dragon4); lose=load(c,R.drawable.lose); win=load(c,R.drawable.win);
+        title=load(c,R.drawable.title); dragons[0]=load(c,R.drawable.dragon1); dragons[1]=load(c,R.drawable.dragon2); dragons[2]=load(c,R.drawable.dragon3); dragons[3]=load(c,R.drawable.dragon4); lose=load(c,R.drawable.lose); uiCharacter1=load(c,R.drawable.ui_character1); uiCharacter2=load(c,R.drawable.ui_character2); developerLogo=load(c,R.drawable.developer_logo); win=load(c,R.drawable.win);
         text.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.BOLD));
     }
     private Bitmap load(Context c,int id){return BitmapFactory.decodeResource(c.getResources(),id);}
@@ -67,8 +67,8 @@ highScore=prefs.getInt("highScore",0);
     private void resetGame(){
         state=State.PLAYING; score=0; worldSpeed=baseSpeed(selected); spawnTimer=.8f; cacti.clear(); playerX=W*.18f; playerY=H*.67f; vy=0; grounded=true; groundX=0; cloudX=0; sfx(R.raw.select);
     }
-    private float baseSpeed(int i){return new float[]{360,405,450,495}[i];}
-    private float difficulty(){return Math.min(380, score*0.085f);}
+    private float baseSpeed(int i){return 330+i*20;}
+    private float difficulty(){return Math.min(300f,score*0.060f);}
     private void update(float dt){
         worldSpeed=baseSpeed(selected)+difficulty();
         score += worldSpeed*dt*.055f;
@@ -101,12 +101,40 @@ highScore=prefs.getInt("highScore",0);
         p.setColor(0xFF244D24);for(int i=-1;i<20;i++)c.drawRect(i*120+groundX,H*.705f,i*120+groundX+55,H*.715f,p);
     }
     private void drawMenu(Canvas c){
-        bg(c); RectF tr=new RectF(W*.10f,H*.03f,W*.90f,H*.48f); drawBitmap(c,title,tr);
-        button(c,"PLAY",W*.38f,H*.49f,W*.62f,H*.59f,0xFF76C72B);button(c,"HOW TO PLAY",W*.34f,H*.61f,W*.66f,H*.70f,0xFF3C8BCF);button(c,"CHARACTERS",W*.34f,H*.72f,W*.66f,H*.81f,0xFFE65B9A);button(c,"SETTINGS",W*.40f,H*.83f,W*.60f,H*.91f,0xFF666666);
-        small(c,"BEST  "+fmt(best),W*.03f,H*.06f,24,Color.WHITE);
+        bg(c);
+
+        // NEW DINO DERBY TITLE
+        drawBitmap(c,title,new RectF(W*.12f,H*.02f,W*.88f,H*.34f));
+
+        // TOP SCORE
+        small(c,"TOP SCORE  "+fmt(best),W*.03f,H*.055f,24,Color.WHITE);
+
+        // SIDE CHARACTERS
+        drawBitmap(c,uiCharacter1,new RectF(W*.01f,H*.36f,W*.22f,H*.77f));
+        drawBitmap(c,uiCharacter2,new RectF(W*.78f,H*.36f,W*.99f,H*.77f));
+
+        // MAIN BUTTONS
+        button(c,"PLAY",W*.38f,H*.38f,W*.62f,H*.47f,0xFF76C72B);
+        button(c,"HOW TO PLAY",W*.34f,H*.49f,W*.66f,H*.58f,0xFF3C8BCF);
+        button(c,"CHARACTERS",W*.34f,H*.60f,W*.66f,H*.69f,0xFFE65B9A);
+        button(c,"SETTINGS",W*.40f,H*.71f,W*.60f,H*.80f,0xFF666666);
+
+        // DEVELOPER PANEL
+        p.setColor(0xDD000000);
+        c.drawRoundRect(new RectF(W*.04f,H*.82f,W*.96f,H*.995f),18,18,p);
+
+        drawBitmap(c,developerLogo,
+            new RectF(W*.055f,H*.835f,W*.14f,H*.98f));
+
+        small(c,"DEVELOPED BY EVO",W*.16f,H*.875f,18,Color.WHITE);
+        small(c,"Instagram: @e.v_.o",W*.16f,H*.915f,16,0xFFE8FFD9);
+        small(c,"Support: jinokunjan@gmail.com",W*.16f,H*.955f,16,0xFFE8FFD9);
+
+        button(c,"INSTAGRAM",W*.73f,H*.84f,W*.92f,H*.91f,0xFFE1306C);
     }
+
     private void drawHow(Canvas c){bg(c); titleText(c,"HOW TO PLAY",W/2f,H*.12f,48,Color.WHITE);String[] a={"RUN  🏃  — Your dragon runs automatically.","JUMP 🦖  — Tap JUMP or the screen to jump.","AVOID 🌵 — Touching a cactus ends the run.","KEEP RUNNING! — Score keeps increasing forever.","Difficulty rises gradually, but stays playable."};float y=H*.28f;for(String s:a){small(c,s,W*.10f,y,27,Color.WHITE);y+=58;}button(c,"BACK",W*.42f,H*.80f,W*.58f,H*.90f,0xFF555555);}
-    private void drawCharacters(Canvas c){bg(c);titleText(c,"CHOOSE YOUR DRAGON",W/2f,H*.10f,40,Color.WHITE);RectF r=new RectF(W*.34f,H*.18f,W*.66f,H*.67f);drawBitmap(c,dragons[selected],r);button(c,"◀",W*.10f,H*.70f,W*.24f,H*.82f,0xFF555555);button(c,"SELECT",W*.39f,H*.70f,W*.61f,H*.82f,0xFF76C72B);button(c,"▶",W*.76f,H*.70f,W*.90f,H*.82f,0xFF555555);String[] n={"DRAGON 1 • SLOW & FUNNY","DRAGON 2 • GETTING FASTER","DRAGON 3 • SUPER FAST","DRAGON 4 • MAX SPEED"};titleText(c,n[selected],W/2f,H*.91f,25,Color.WHITE);}
+    private void drawCharacters(Canvas c){bg(c);titleText(c,"CHOOSE YOUR DRAGON",W/2f,H*.10f,40,Color.WHITE);RectF r=new RectF(W*.34f,H*.18f,W*.66f,H*.67f);drawBitmap(c,dragons[selected],r);button(c,"◀",W*.10f,H*.70f,W*.24f,H*.82f,0xFF555555);button(c,"SELECT",W*.39f,H*.70f,W*.61f,H*.82f,0xFF76C72B);button(c,"▶",W*.76f,H*.70f,W*.90f,H*.82f,0xFF555555);String[] n={"Jerish Dino","Ashik Dino","Rizwan Dino","Abinesh Dino"};titleText(c,n[selected],W/2f,H*.91f,25,Color.WHITE);}
     private void drawSettings(Canvas c){bg(c);titleText(c,"SETTINGS",W/2f,H*.13f,48,Color.WHITE);small(c,"FPS",W*.24f,H*.30f,30,Color.WHITE);button(c,"30",W*.31f,H*.38f,W*.42f,H*.49f,fps==30?0xFF76C72B:0xFF555555);button(c,"60",W*.445f,H*.38f,W*.555f,H*.49f,fps==60?0xFF76C72B:0xFF555555);button(c,"90",W*.58f,H*.38f,W*.69f,H*.49f,fps==90?0xFF76C72B:0xFF555555);button(c,"SFX: "+(prefs.getBoolean("sfx",true)?"ON":"OFF"),W*.31f,H*.56f,W*.69f,H*.67f,0xFF555555);button(c,"MUSIC: "+(prefs.getBoolean("music",true)?"ON":"OFF"),W*.31f,H*.71f,W*.69f,H*.82f,0xFF555555);button(c,"BACK",W*.42f,H*.87f,W*.58f,H*.96f,0xFF555555);}
     private void drawGame(Canvas c){bg(c); // cactus
         p.setColor(0xFF4B8E32);for(RectF r:cacti){c.drawRoundRect(r,16,16,p);c.drawRoundRect(r.left-22,r.top+35,r.left+5,r.top+75,12,12,p);c.drawRoundRect(r.right-5,r.top+52,r.right+22,r.top+88,12,12,p);}drawBitmap(c,dragons[selected],new RectF(playerX,playerY-155,playerX+140,playerY+5));
@@ -166,7 +194,22 @@ highScore=prefs.getInt("highScore",0);
         }
 
         if(e.getAction()!=MotionEvent.ACTION_UP)return true;
-        if(state==State.MENU){if(hit(x,y,W*.38f,H*.43f,W*.62f,H*.52f)){resetGame();}else if(hit(x,y,W*.34f,H*.54f,W*.66f,H*.63f)){state=State.HOW;sfx(R.raw.click);}else if(hit(x,y,W*.34f,H*.65f,W*.66f,H*.74f)){state=State.CHARACTERS;sfx(R.raw.click);}else if(hit(x,y,W*.40f,H*.76f,W*.60f,H*.85f)){state=State.SETTINGS;sfx(R.raw.click);}else if(hit(x,y,W*.72f,H*.88f,W*.90f,H*.925f)){openInstagram();}}
+        if(state==State.MENU){
+            if(hit(x,y,W*.38f,H*.38f,W*.62f,H*.47f)){
+                resetGame();
+            }else if(hit(x,y,W*.34f,H*.49f,W*.66f,H*.58f)){
+                state=State.HOW;
+                sfx(R.raw.click);
+            }else if(hit(x,y,W*.34f,H*.60f,W*.66f,H*.69f)){
+                state=State.CHARACTERS;
+                sfx(R.raw.click);
+            }else if(hit(x,y,W*.40f,H*.71f,W*.60f,H*.80f)){
+                state=State.SETTINGS;
+                sfx(R.raw.click);
+            }else if(hit(x,y,W*.73f,H*.84f,W*.92f,H*.91f)){
+                openInstagram();
+            }
+        }
         else if(state==State.HOW){if(hit(x,y,W*.42f,H*.80f,W*.58f,H*.90f)){state=State.MENU;sfx(R.raw.click);}}
         else if(state==State.CHARACTERS){if(hit(x,y,W*.10f,H*.70f,W*.24f,H*.82f)){selected=(selected+3)%4;prefs.edit().putInt("dragon",selected).apply();sfx(R.raw.select);}else if(hit(x,y,W*.76f,H*.70f,W*.90f,H*.82f)){selected=(selected+1)%4;prefs.edit().putInt("dragon",selected).apply();sfx(R.raw.select);}else if(hit(x,y,W*.39f,H*.70f,W*.61f,H*.82f)){state=State.MENU;sfx(R.raw.dragon);}}
         else if(state==State.SETTINGS){if(hit(x,y,W*.31f,H*.38f,W*.42f,H*.49f)){fps=30;}else if(hit(x,y,W*.445f,H*.38f,W*.555f,H*.49f)){fps=60;}else if(hit(x,y,W*.58f,H*.38f,W*.69f,H*.49f)){fps=90;}else if(hit(x,y,W*.31f,H*.56f,W*.69f,H*.67f)){prefs.edit().putBoolean("sfx",!prefs.getBoolean("sfx",true)).apply();}else if(hit(x,y,W*.31f,H*.71f,W*.69f,H*.82f)){prefs.edit().putBoolean("music",!prefs.getBoolean("music",true)).apply(); if(music!=null){if(prefs.getBoolean("music",true))music.start();else music.pause();}}else if(hit(x,y,W*.42f,H*.87f,W*.58f,H*.96f)){prefs.edit().putInt("fps",fps).apply();state=State.MENU;}prefs.edit().putInt("fps",fps).apply();sfx(R.raw.click);}
