@@ -129,6 +129,21 @@ highScore=prefs.getInt("highScore",0);
     private void titleText(Canvas c,String s,float x,float y,float size,int color){text.setTextSize(size);text.setColor(color);text.setTextAlign(Paint.Align.CENTER);text.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.BOLD));p.setStyle(Paint.Style.FILL);c.drawText(s,x,y,text);}
     private void small(Canvas c,String s,float x,float y,float size,int color){text.setTextSize(size);text.setColor(color);text.setTextAlign(Paint.Align.LEFT);c.drawText(s,x,y,text);}
     private void button(Canvas c,String label,float l,float t,float r,float b,int color){RectF q=new RectF(l,t,r,b);buttons.put(label+"@"+l,q);p.setColor(0x99000000);c.drawRoundRect(new RectF(l+4,t+5,r+4,b+5),18,18,p);p.setColor(color);c.drawRoundRect(q,18,18,p);text.setTextSize(Math.min(30,(b-t)*.42f));text.setColor(Color.WHITE);text.setTextAlign(Paint.Align.CENTER);text.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.BOLD));c.drawText(label,(l+r)/2f,(t+b)/2f-text.ascent()/2f-3,text);}
+    private void openInstagram(){
+        try{
+            getContext().startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.instagram.com/e.v_.o?stkn=MTZvZGg2a2R6cmx5dA==")));
+        }catch(Exception ignored){}
+    }
+
+    private void openSupport(){
+        try{
+            Intent i=new Intent(Intent.ACTION_SENDTO);
+            i.setData(Uri.parse("mailto:jinokunjan@gmail.com"));
+            i.putExtra(Intent.EXTRA_SUBJECT,"DINO DERBY Support");
+            getContext().startActivity(i);
+        }catch(Exception ignored){}
+    }
+
     private boolean hit(float x,float y,float l,float t,float r,float b){return x>=l&&x<=r&&y>=t&&y<=b;}
     @Override public boolean onTouchEvent(android.view.MotionEvent e){
         float x=e.getX(),y=e.getY();
