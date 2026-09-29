@@ -9,6 +9,7 @@ import android.os.SystemClock;
 import java.util.*;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
+    private int highScore = 0;
     private String fmt(float v) { return String.valueOf((int) v); }
     enum State { MENU, HOW, CHARACTERS, SETTINGS, PLAYING, PAUSED, GAME_OVER, WIN }
     private final SurfaceHolder holder;
