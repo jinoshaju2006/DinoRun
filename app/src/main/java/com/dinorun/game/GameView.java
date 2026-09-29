@@ -1,6 +1,8 @@
 package com.dinorun.game;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.graphics.*;
 import android.graphics.drawable.*;
 import android.media.MediaPlayer;
