@@ -35,6 +35,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     public GameView(Context c){
         super(c); holder=getHolder(); holder.addCallback(this); setFocusable(true);
         prefs=c.getSharedPreferences("dino",Context.MODE_PRIVATE);
+highScore=prefs.getInt("highScore",0);
         selected=prefs.getInt("dragon",0); fps=prefs.getInt("fps",60); best=prefs.getFloat("best",0);
         title=load(c,R.drawable.title); dragons[0]=load(c,R.drawable.dragon1); dragons[1]=load(c,R.drawable.dragon2); dragons[2]=load(c,R.drawable.dragon3); dragons[3]=load(c,R.drawable.dragon4); lose=load(c,R.drawable.lose); win=load(c,R.drawable.win);
         text.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.BOLD));
