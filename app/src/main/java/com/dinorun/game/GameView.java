@@ -79,7 +79,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
             spawnTimer=gap/worldSpeed;
         }
         for(int i=cacti.size()-1;i>=0;i--){RectF r=cacti.get(i); r.offset(-worldSpeed*dt,0); if(r.right<-30)cacti.remove(i);}
-        player.set(playerX,H*.67f-120,playerX+110,H*.67f);
+        player.set(playerX,playerY-120,playerX+110,playerY);
         RectF hit=new RectF(player.left+25,player.top+20,player.right-15,player.bottom-8);
         for(RectF c:cacti){RectF cr=new RectF(c.left+10,c.top+8,c.right-10,c.bottom); if(RectF.intersects(hit,cr)){gameOver();return;}}
     }
@@ -105,7 +105,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private void drawCharacters(Canvas c){bg(c);titleText(c,"CHOOSE YOUR DRAGON",W/2f,H*.10f,40,Color.WHITE);RectF r=new RectF(W*.34f,H*.18f,W*.66f,H*.67f);drawBitmap(c,dragons[selected],r);button(c,"◀",W*.10f,H*.70f,W*.24f,H*.82f,0xFF555555);button(c,"SELECT",W*.39f,H*.70f,W*.61f,H*.82f,0xFF76C72B);button(c,"▶",W*.76f,H*.70f,W*.90f,H*.82f,0xFF555555);String[] n={"DRAGON 1 • SLOW & FUNNY","DRAGON 2 • GETTING FASTER","DRAGON 3 • SUPER FAST","DRAGON 4 • MAX SPEED"};titleText(c,n[selected],W/2f,H*.91f,25,Color.WHITE);}
     private void drawSettings(Canvas c){bg(c);titleText(c,"SETTINGS",W/2f,H*.13f,48,Color.WHITE);small(c,"FPS",W*.24f,H*.30f,30,Color.WHITE);button(c,"30",W*.31f,H*.38f,W*.42f,H*.49f,fps==30?0xFF76C72B:0xFF555555);button(c,"60",W*.445f,H*.38f,W*.555f,H*.49f,fps==60?0xFF76C72B:0xFF555555);button(c,"90",W*.58f,H*.38f,W*.69f,H*.49f,fps==90?0xFF76C72B:0xFF555555);button(c,"SFX: "+(prefs.getBoolean("sfx",true)?"ON":"OFF"),W*.31f,H*.56f,W*.69f,H*.67f,0xFF555555);button(c,"MUSIC: "+(prefs.getBoolean("music",true)?"ON":"OFF"),W*.31f,H*.71f,W*.69f,H*.82f,0xFF555555);button(c,"BACK",W*.42f,H*.87f,W*.58f,H*.96f,0xFF555555);}
     private void drawGame(Canvas c){bg(c); // cactus
-        p.setColor(0xFF4B8E32);for(RectF r:cacti){c.drawRoundRect(r,16,16,p);c.drawRoundRect(r.left-22,r.top+35,r.left+5,r.top+75,12,12,p);c.drawRoundRect(r.right-5,r.top+52,r.right+22,r.top+88,12,12,p);}drawBitmap(c,dragons[selected],new RectF(playerX,H*.67f-155,playerX+140,H*.67f+5));
+        p.setColor(0xFF4B8E32);for(RectF r:cacti){c.drawRoundRect(r,16,16,p);c.drawRoundRect(r.left-22,r.top+35,r.left+5,r.top+75,12,12,p);c.drawRoundRect(r.right-5,r.top+52,r.right+22,r.top+88,12,12,p);}drawBitmap(c,dragons[selected],new RectF(playerX,playerY-155,playerX+140,playerY+5));
         small(c,"SCORE  "+fmt(score),30,42,28,Color.WHITE);small(c,"BEST  "+fmt(best),30,76,20,0xFFE8FFD9);small(c,"FPS "+fps, W-100,42,20,Color.WHITE);button(c,"JUMP",W*.80f,H*.78f,W*.97f,H*.95f,0xFF76C72B);button(c,"Ⅱ",W*.70f,H*.04f,W*.77f,H*.13f,0xFF555555);
     }
     private void overlay(Canvas c){p.setColor(0xAA000000);c.drawRect(0,0,W,H,p);}
